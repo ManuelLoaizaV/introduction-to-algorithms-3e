@@ -27,15 +27,13 @@ void Merge(std::vector<int>& A, int p, int r) {
         k++;
     }
     if (i == n1) {
-        while (j < n2) {
-            A[k] = R[j];
-            j++;
+        for (int s = j; s < n2; s++) {
+            A[k] = R[s];
             k++;
         }
     } else {
-        while (i < n1) {
-            A[k] = L[i];
-            i++;
+        for (int s = i; s < n1; s++) {
+            A[k] = L[s];
             k++;
         }
     }
