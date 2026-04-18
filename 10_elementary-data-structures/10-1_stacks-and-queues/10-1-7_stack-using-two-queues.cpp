@@ -5,28 +5,73 @@
 const int MAX_CAPACITY{32};
 
 template<typename T, int max_capacity = MAX_CAPACITY>
-struct Stack {
-    int top_index{-1};
+struct Queue {
     std::array<T, max_capacity> data;
+    int head_index{0};
+    int tail_index{0};
+    int length{0};
 
     bool Empty(void) {
-        return top_index == -1;
+        return length == 0;
+    }
+
+    int Size(void) {
+        return length;
+    }
+
+    void Enqueue(T x) {
+        if (length == max_capacity) {
+            throw std::overflow_error("Queue overflow");
+        }
+        data[tail_index] = x;
+        length++;
+        if (tail_index == max_capacity - 1) {
+            tail_index = 0;
+        } else {
+            tail_index++;
+        }
+    }
+
+    T Dequeue(void) {
+        if (Empty()) {
+            throw std::underflow_error("Queue underflow");
+        }
+        T x = data[head_index];
+        if (head_index == max_capacity - 1) {
+            head_index = 0;
+        } else {
+            head_index++;
+        }
+        length--;
+        return x;
+    }
+};
+
+template<typename T, int max_capacity = MAX_CAPACITY>
+struct Stack {
+    Queue<T, max_capacity> helper, queue;
+
+    bool Empty(void) {
+        return queue.Empty();
     }
 
     void Push(T x) {
-        if (top_index + 1 == max_capacity) {
-            throw std::overflow_error("Stack overflow.");
+        if (queue.Size() == max_capacity) {
+            throw std::overflow_error("Stack overflow");
         }
-        top_index++;
-        data[top_index] = x;
+        queue.Enqueue(x);
     }
 
     T Pop(void) {
-        if (top_index == -1) {
-            throw std::underflow_error("Stack underflow.");
+        if (queue.Empty()) {
+            throw std::underflow_error("Stack underflow");
         }
-        top_index--;
-        return data[top_index + 1];
+        while (queue.Size() > 1) {
+            helper.Enqueue(queue.Dequeue());
+        }
+        T x = queue.Dequeue();
+        std::swap(helper, queue);
+        return x;
     }
 };
 
