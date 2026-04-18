@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdexcept>
 
 const int MAX_CAPACITY{32};
@@ -30,11 +31,48 @@ struct Stack {
 
 int main(void) {
     Stack<int, 6> stack;
-    stack.Push(4);
-    stack.Push(1);
-    stack.Push(3);
-    stack.Pop();
-    stack.Push(8);
-    stack.Pop();
+
+    std::cout << "Pushing elements to capacity" << std::endl;
+    for (int i = 0; i < 6; ++i) {
+        stack.Push(i * 10);
+    }
+
+    std::cout << "Attempting to push to a full stack" << std::endl;
+    try {
+        stack.Push(60);
+    } catch (const std::overflow_error& e) {
+        std::cout << "Caught expected error: " << e.what() << std::endl;
+    }
+
+    std::cout << "Popping elements" << std::endl;
+    std::cout << "Pop: " << stack.Pop() << std::endl;
+    std::cout << "Pop: " << stack.Pop() << std::endl;
+
+    std::cout << "Pushing again after pops" << std::endl;
+    stack.Push(40);
+    stack.Push(50);
+
+    std::cout << "Emptying the stack" << std::endl;
+    while (!stack.Empty()) {
+        std::cout << "Pop: " << stack.Pop() << std::endl;
+    }
+
+    std::cout << "Attempting to pop from an empty stack" << std::endl;
+    try {
+        stack.Pop();
+    } catch (const std::underflow_error& e) {
+        std::cout << "Caught expected error: " << e.what() << std::endl;
+    }
+
+    std::cout << "Testing with std::string" << std::endl;
+    Stack<std::string, 3> string_stack;
+    string_stack.Push("alpha");
+    string_stack.Push("beta");
+    string_stack.Push("gamma");
+
+    while (!string_stack.Empty()) {
+        std::cout << "Pop: " << string_stack.Pop() << std::endl;
+    }
+
     return 0;
 }
